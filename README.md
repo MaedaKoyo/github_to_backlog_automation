@@ -10,6 +10,11 @@ https://github.com/MaedaKoyo/github_to_backlog_automation/assets/78582228/3493a0
 
 <br>
 
+### Register summary and comments when additional assigned
+https://github.com/MaedaKoyo/github_to_backlog_automation/assets/78582228/40e44ee3-cfe9-4b1e-859f-da1d2e458b69
+
+<br>
+
 ### Reflect changes when the overview is updated
 https://github.com/MaedaKoyo/github_to_backlog_automation/assets/78582228/9511ecef-c32b-41c1-875e-fc61c996828a
 
