@@ -30,6 +30,11 @@ https://github.com/MaedaKoyo/github_to_backlog_automation/assets/78582228/a29977
 
 <br>
 
+### When a comment is deleted, the comment in Backlog is also deleted
+https://github.com/MaedaKoyo/github_to_backlog_automation/assets/78582228/20400d76-1dda-48ca-88fc-24d4b338c6a9
+
+<br>
+
 ### Close Backlog when the issue is closed
 https://github.com/MaedaKoyo/github_to_backlog_automation/assets/78582228/144e0534-e1e6-45bd-b705-92aadc6b9b6c
 
