@@ -40,6 +40,10 @@ https://github.com/MaedaKoyo/github_to_backlog_automation/assets/78582228/144e05
 
 <br>
 
+### Reopen Backlog when the issue is reopened
+https://github.com/MaedaKoyo/github_to_backlog_automation/assets/78582228/0126d317-fb0b-429e-940d-48cc184ba564
+
+<br>
 
 ## Development Environment
 - GAS
