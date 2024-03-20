@@ -1,9 +1,9 @@
 # Link Github and Backlog
 
-## System Overview
+## <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/2604_fe0f/512.gif" width="20" height="20"/>　System Overview
 Automatically apply changes and translate content from Github to Backlog.
 
-## Features
+## <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f680/512.gif" width="20" height="20"/>　Features
 
 ### Register assigned issues in Backlog
 https://github.com/MaedaKoyo/github_to_backlog_automation/assets/78582228/3493a0cf-80ad-4aa8-a347-bed3732b2d79
@@ -57,11 +57,11 @@ https://github.com/MaedaKoyo/github_to_backlog_automation/assets/78582228/4917c2
 
 <br>
 
-## Onother
+## <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f54a_fe0f/512.gif" width="20" height="20"/>　Other
 ### HealthCheck function
 Every 15 minutes, this system is checked to make sure it is working properly. 
 If the system goes down, the administrator is notified by email.
 
-## Development Environment
+## <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/2699_fe0f/512.gif" width="20" height="20"/>　Development Environment
 - GAS
 - Google Sheet
