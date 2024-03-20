@@ -57,6 +57,11 @@ https://github.com/MaedaKoyo/github_to_backlog_automation/assets/78582228/4917c2
 
 <br>
 
+## Onother
+### HealthCheck function
+Every 15 minutes, this system is checked to make sure it is working properly. 
+If the system goes down, the administrator is notified by email.
+
 ## Development Environment
 - GAS
 - Google Sheet
