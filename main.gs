@@ -4,12 +4,13 @@ const APIKEY = prop.BACKLOG_API_KEY
 const APIURL = 'https://hblab.backlogtool.com/api/v2/'
 const PROJECT_ID = ''
 const ISSUE_TYPE = ''
+const HUONGPT1 = '' //backlog user id
 const GITHUB_TOKEN = prop.GITHUB_TOKEN
 const GITHUB_ACCOUNT = ''
 
 //For google doc
-const doc = DocumentApp.openByUrl("");
-const BODY = doc.getBody();
+//const doc = DocumentApp.openByUrl("");
+//const BODY = doc.getBody();
 
 //For google sheet
 const SHEET_ID = '';
@@ -19,7 +20,15 @@ const SHEET_COMMENT = SpreadsheetApp.openById(SHEET_ID).getSheetByName('CommentI
 
 function doPost(e) {
   const data = JSON.parse(e.postData.contents);
-  //Logger.log(e.postData.contents)
+  //Logger.log(data)
+
+  //HealthCheck
+  if (data.healthcheck === 'true'){
+    var result = {
+      status: 'success'
+    };
+    return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
+  }
 
   try{
     if (data.action === 'created' && data.issue) {//==========================[CREATE COMMENT]=============================
@@ -28,20 +37,19 @@ function doPost(e) {
       let res = createComment(project_key, content);
       SHEET_COMMENT.appendRow([String(data.comment.id), String(res.id)]);
 
-    }else if(data.action === 'edited' && data.issue){//==========================[UPDATE COMMENT]==========================
+    }else if(data.action === 'edited' && data.issue){//==========================[UPDATE COMMENT]=============================
       if(data.comment){//normalコメント
         let content = getTranslatedContent(data.comment.body);
         let project_key = getProjectKey(data.issue.number);
         let backlog_comment_id = getBacklogCommentId(data.comment.id);
         updateComment(project_key, backlog_comment_id, content);
-
       }else{//issueコメント
         let project_key = getProjectKey(data.issue.number)
         let content = getTranslatedContent(data.issue.body)
         updateTicket(project_key, content);
       }
 
-    }else if(data.action === 'deleted' && data.issue){//==========================[DELETE COMMENT]=========================
+    }else if(data.action === 'deleted' && data.issue){//==========================[DELETE COMMENT]=============================
       if(!isRegisteredIssue(data.issue.number)){
         return;
       }
@@ -52,7 +60,7 @@ function doPost(e) {
 
       SHEET_COMMENT.deleteRow(findRow(SHEET_COMMENT, data.comment.id, 1))
 
-    }else if(data.action === 'opened' && data.issue.assignees.length > 0){//======[CREATE ISSUE]===========================
+    }else if(data.action === 'opened' && data.issue.assignees.length > 0){//======[CREATE ISSUE]================================
       if(!isAssigned(data.issue.assignees)){
         return;
       }
@@ -68,7 +76,6 @@ function doPost(e) {
       if(isRegisteredIssue(data.issue.number)){
         return;
       }
-
       create(data)
       
       let project_key = getProjectKey(data.issue.number);
@@ -79,27 +86,42 @@ function doPost(e) {
         SHEET_COMMENT.appendRow([String(comment.id), String(res_id.id)]);
       })
 
-    }else if(data.action === 'closed'){//======================================[CLOSE ISSUE]=============================
+    }else if(data.action === 'closed'){//======================================[CLOSE ISSUE]===================================
       try{
-        let project_key = getProjectKey(data.issue.number);
+        if(data.pull_request){
+          var project_key = getProjectKey(data.number)
+        }else{
+          var project_key = getProjectKey(data.issue.number);
+        }
         closeTicket(project_key);
       }catch{
         return;
       }
 
-    }else if(data.action === 'reopened' && data.issue){//=======================[REOPEN ISSUE]============================
+    }else if(data.action === 'reopened' && data.issue){//=======================[REOPEN ISSUE]===================================
       if(!isRegisteredIssue(data.issue.number)){
         return;
       }
 
       let project_key = getProjectKey(data.issue.number);
       openTicket(project_key)
+
+    }else if(data.action === 'review_requested'){//============================[Review Request]===================================
+      // BODY.appendParagraph('====[Review Request]====');
+      if(data.requested_reviewer.login != GITHUB_ACCOUNT){
+        // BODY.appendParagraph(data.requested_reviewer.login)
+        // BODY.appendParagraph('対象外')
+        return;
+      }
+      create(data)
+
     }else{
       return;
     }
   } catch(e){
-    BODY.appendParagraph("[ERROR]===");
-    BODY.appendParagraph(e);
+    return;
+    //BODY.appendParagraph("[ERROR]===");
+    //BODY.appendParagraph(e);
   }
 }
 
@@ -108,12 +130,21 @@ function doPost(e) {
 
 function create(data){
   //get data
-  let summary = '#' + String(data.issue.number)+ ' ' + data.issue.title
-  let content = getTranslatedContent(data.issue.body)
+  if (data.action == 'review_requested'){
+    var issue_number = String(data.number)
+    var summary = '[REVIEW]#' + issue_number+ ' ' + data.pull_request.title
+    var content = getTranslatedContent(data.pull_request.body)
+  }else {
+    var issue_number = String(data.issue.number)
+    var summary = '#' + issue_number+ ' ' + data.issue.title
+    var content = getTranslatedContent(data.issue.body)
+  }
+
   //create backlog ticket
   let res = createTicket(summary, content);
+
   //insert data to sheet
-  SHEET_ISSUE.appendRow([String(data.issue.number), String(res.issueKey)]);
+  SHEET_ISSUE.appendRow([issue_number, String(res.issueKey)]);
 }
 
 
@@ -199,7 +230,8 @@ function createTicket(summary, content) {
       'summary': summary,
       'issueTypeId': ISSUE_TYPE,
       'priorityId': '3',
-      'description': content
+      'description': content,
+      'notifiedUserId[]': HUONGPT1
     }
   };
   return JSON.parse(UrlFetchApp.fetch(url, options).getContentText());
@@ -229,7 +261,8 @@ function openTicket(project_key){
       'content-type': 'application/x-www-form-urlencoded'
     },
     'payload': {
-      'statusId': '1'
+      'statusId': '1',
+      'notifiedUserId[]': HUONGPT1
     }
   };
   return JSON.parse(UrlFetchApp.fetch(url, options).getContentText());
@@ -244,7 +277,8 @@ function closeTicket(project_key){
       'content-type': 'application/x-www-form-urlencoded'
     },
     'payload': {
-      'statusId': '4'
+      'statusId': '4',
+      'notifiedUserId[]': HUONGPT1
     }
   };
   return JSON.parse(UrlFetchApp.fetch(url, options).getContentText());
@@ -259,7 +293,8 @@ function createComment(project_key, content) {
       'content-type': 'application/x-www-form-urlencoded'
     },
     'payload': {
-      'content': content
+      'content': content,
+      'notifiedUserId[]': HUONGPT1
     }
   };
   return JSON.parse(UrlFetchApp.fetch(url, options).getContentText());
