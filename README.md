@@ -45,6 +45,18 @@ https://github.com/MaedaKoyo/github_to_backlog_automation/assets/78582228/0126d3
 
 <br>
 
+### Register review-requested pull request
+As with Issues, there is the ability to update the summary and register comments
+
+https://github.com/MaedaKoyo/github_to_backlog_automation/assets/78582228/4a19a756-5eaf-4e2b-9a6c-890ed1b02926
+
+<br>
+
+### Close backlog when the pull request is merged
+https://github.com/MaedaKoyo/github_to_backlog_automation/assets/78582228/4917c2d0-5ed1-4499-812c-c090336dd95d
+
+<br>
+
 ## Development Environment
 - GAS
 - Google Sheet
